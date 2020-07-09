@@ -1,16 +1,20 @@
-import React, { Component } from 'react'
-import API from './utils/API'
+import React, { Component } from 'react';
+import API from './utils/API';
+
+
 
 class EmployeeCard extends Component {
   state = {
     results: [],
     firstName: '',
     lastName: '',
-    username: '',
     email: '',
     picture: '',
     gender: ''
+    
   }
+
+  
 
   componentDidMount () {
     this.searchName('https://randomuser.me/api/?results=200&nat=us')
@@ -19,12 +23,23 @@ class EmployeeCard extends Component {
   searchName = query => {
     API.search(query)
       .then(res => {
-        this.setState({ results: res.data.results })
+        this.setState({ results: res.data.results})
         console.log(this.state.results)
-      })
 
+        // Adding sort function
+        const sorting = this.results.sort(function (a, b) {
+          if(a.name.last < b.name.last)
+          return -1;
+          if(a.name.last > b.name.last)
+          return 1;
+          return 0;
+        })
+      })
+      
       .catch(err => console.log(err))
   }
+
+  
 
   handleInputChange = event => {
     const name = event.target.name
@@ -39,7 +54,7 @@ class EmployeeCard extends Component {
     event.preventDefault()
     this.searchName(this.state.search)
   }
-
+  
   render () {
     return (
       <div>
@@ -73,19 +88,5 @@ class EmployeeCard extends Component {
   }
 }
 
-// API.search()
-//   .then(res => {
-//     console.log("Res: "+JSON.stringify(res));
-//     empName = res.data.results[0].name.first;
-//     console.log('EMPLOYEE NAME: '+ empName)
-
-//   })
-//   .catch(err => console.log(err));
-
-//   return(
-//     <div>
-//   { empName }
-//   </div>
-//   )
 
 export default EmployeeCard
